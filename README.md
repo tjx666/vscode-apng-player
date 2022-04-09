@@ -1,6 +1,6 @@
-# VSCode Webview Extension Boilerplate
+# VSCode APNG Player
 
 ## Features
 
-- webpack bundle extension code and webview code
-- react hot reload
+- APNG Player
+- Check APNG Info

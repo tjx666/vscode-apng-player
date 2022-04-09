@@ -11,7 +11,7 @@ const mergedConfiguration: Configuration = merge(commonWebpackConfig, {
     mode: 'production',
     plugins: [
         new BannerPlugin({
-            banner: '/** @preserve powered by vscode-extension-boilerplate(https://github.com/tjx666/vscode-extension-boilerplate) */',
+            banner: '/** @preserve powered by vscode-webview-extension-boilerplate(https://github.com/tjx666/vscode-webview-extension-boilerplate) */',
             raw: true,
         }),
     ],

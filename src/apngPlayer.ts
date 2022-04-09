@@ -3,9 +3,9 @@ import vscode from 'vscode';
 import { __DEV__ } from './constants';
 import { getNonce } from './utils';
 
-export class MyWebview {
-    public static readonly viewType = 'WebviewBoilerplate';
-    public static currentMyWebview: MyWebview | undefined;
+export class ApngPlayer {
+    public static readonly viewType = 'ApngPlayer';
+    public static currentPlayer: ApngPlayer | undefined;
 
     private readonly extensionUri: vscode.Uri;
     private readonly disposables: vscode.Disposable[] = [];
@@ -17,14 +17,14 @@ export class MyWebview {
             ? vscode.window.activeTextEditor.viewColumn
             : undefined;
 
-        if (MyWebview.currentMyWebview) {
-            MyWebview.currentMyWebview.panel!.reveal(column);
+        if (ApngPlayer.currentPlayer) {
+            ApngPlayer.currentPlayer.panel!.reveal(column);
             return;
         }
 
         const panel = vscode.window.createWebviewPanel(
-            MyWebview.viewType,
-            'Webview Boilerplate',
+            ApngPlayer.viewType,
+            'APNG Player',
             column ?? vscode.ViewColumn.One,
             {
                 enableScripts: true,
@@ -33,7 +33,7 @@ export class MyWebview {
             },
         );
 
-        MyWebview.currentMyWebview = new MyWebview(panel, extensionUri);
+        ApngPlayer.currentPlayer = new ApngPlayer(panel, extensionUri);
     }
 
     private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
@@ -74,7 +74,7 @@ export class MyWebview {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         ${cspMeta}
-        <title>Webview Boilerplate</title>
+        <title>APNG Player</title>
     </head>
     <body>
         <div id="root"></div>
@@ -87,7 +87,7 @@ export class MyWebview {
     }
 
     private dispose() {
-        MyWebview.currentMyWebview = undefined;
+        ApngPlayer.currentPlayer = undefined;
         this.panel = undefined;
 
         while (this.disposables.length > 0) {

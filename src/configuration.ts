@@ -9,7 +9,7 @@ class Configuration {
     }
 
     update(extensionContext?: ExtensionContext) {
-        // const latestConfiguration = vscode.workspace.getConfiguration('webviewBoilerplate');
+        // const latestConfiguration = vscode.workspace.getConfiguration('apngPlayer');
         if (extensionContext) {
             this.globalStoragePath = extensionContext.globalStorageUri.fsPath;
             // this.xxx = latestConfiguration.get('xxx')!;
