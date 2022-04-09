@@ -1,4 +1,5 @@
 import vscode from 'vscode';
+import path from 'path';
 
 import { __DEV__ } from './constants';
 import { getNonce } from './utils';
@@ -11,8 +12,9 @@ export class ApngPlayer {
     private readonly disposables: vscode.Disposable[] = [];
     private panel: vscode.WebviewPanel | undefined;
     private html = '';
+    private apngUri: vscode.Uri;
 
-    public static createOrShow(extensionUri: vscode.Uri) {
+    public static createOrShow(extensionUri: vscode.Uri, apngUri: vscode.Uri) {
         const column = vscode.window.activeTextEditor
             ? vscode.window.activeTextEditor.viewColumn
             : undefined;
@@ -28,17 +30,21 @@ export class ApngPlayer {
             column ?? vscode.ViewColumn.One,
             {
                 enableScripts: true,
-                localResourceRoots: [extensionUri],
+                localResourceRoots: [
+                    extensionUri,
+                    apngUri.with({ path: path.dirname(apngUri.path) }),
+                ],
                 retainContextWhenHidden: true,
             },
         );
 
-        ApngPlayer.currentPlayer = new ApngPlayer(panel, extensionUri);
+        ApngPlayer.currentPlayer = new ApngPlayer(panel, extensionUri, apngUri);
     }
 
-    private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
+    private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, apngUri: vscode.Uri) {
         this.panel = panel;
         this.extensionUri = extensionUri;
+        this.apngUri = apngUri;
 
         // setup listeners
         this.panel.onDidDispose(() => this.dispose(), this, this.disposables);
@@ -64,6 +70,7 @@ export class ApngPlayer {
               );
         const nonce = getNonce();
         const nonceAttr = __DEV__ ? '' : `nonce="${nonce}"`;
+        const configuration = {};
         const cspMeta = __DEV__
             ? ''
             : `<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'unsafe-inline'; script-src 'nonce-${nonce}';">`;
@@ -74,6 +81,9 @@ export class ApngPlayer {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         ${cspMeta}
+        <meta id='data'
+					data-uri='${this.panel!.webview.asWebviewUri(this.apngUri).toString()}'
+					data-configuration='${JSON.stringify(configuration)}'>
         <title>APNG Player</title>
     </head>
     <body>
