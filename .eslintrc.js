@@ -73,6 +73,7 @@ module.exports = {
         'unicorn/prefer-node-protocol': OFF,
         'unicorn/prevent-abbreviations': OFF,
         'unicorn/text-encoding-identifier-case': OFF,
+        'unicorn/no-zero-fractions': OFF,
 
         'func-names': OFF,
         'max-classes-per-file': OFF,
