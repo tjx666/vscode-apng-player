@@ -147,4 +147,9 @@ export default class ApngPlayer extends EventEmitter {
         this.context.clearRect(0, 0, this._apng.width, this._apng.height);
         this.renderNextFrame();
     }
+
+    jump(frameNumber: number) {
+        this._currentFrameNumber = Math.max(0, frameNumber - 1) % this._apng.frames.length;
+        this.renderNextFrame();
+    }
 }

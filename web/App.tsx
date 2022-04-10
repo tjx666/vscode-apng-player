@@ -1,7 +1,8 @@
 import parseAPNG, { APNG } from 'apng-js';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { Player } from './components';
+import useMount from './hooks/useMount';
 import { AppStage } from './types';
 import { loadBinaryData } from './utils';
 
@@ -15,7 +16,7 @@ export default function App() {
     const [appStage, setAppStatus] = useState<AppStage>(AppStage.Loading);
     const [apng, setApng] = useState<APNG>();
 
-    const init = async () => {
+    useMount(async () => {
         let apng: APNG | Error;
 
         try {
@@ -34,11 +35,7 @@ export default function App() {
 
         setApng(apng);
         setAppStatus(AppStage.Ready);
-    };
-
-    useEffect(() => {
-        init();
-    }, []);
+    });
 
     switch (appStage) {
         case AppStage.Loading:

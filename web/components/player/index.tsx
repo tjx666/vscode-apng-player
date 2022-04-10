@@ -1,5 +1,7 @@
+import useMount from '@/hooks/useMount';
+import useUnmount from '@/hooks/useUnmount';
 import { APNG } from 'apng-js';
-import { memo, useCallback, useLayoutEffect, useMemo, useRef } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import ApngPlayer from './player';
 
 import './style.less';
@@ -25,25 +27,32 @@ function getAdaptivePreviewSize(apngWidth: number, apngHeight: number) {
 
 function Player({ apng }: PlayerProps) {
     const previewerRef = useRef<HTMLCanvasElement>(null);
+    const [player, setPlayer] = useState<ApngPlayer | null>(null);
+    const [frameNumber, setFrameNumber] = useState(0);
 
     const adaptiveSize = useMemo(
         () => getAdaptivePreviewSize(apng.width, apng.height),
         [apng.width, apng.height],
     );
 
-    const setup = useCallback(async () => {
+    const handleFrameNumberChange = useCallback((frameNumber: number) => {
+        setFrameNumber(frameNumber);
+    }, []);
+
+    useMount(async () => {
         const ctx = previewerRef.current!.getContext('2d')!;
         await apng.createImages();
-        new ApngPlayer(apng, ctx, {
+        const player = new ApngPlayer(apng, ctx, {
             autoPlayer: true,
             scale: adaptiveSize[2],
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [apng, adaptiveSize[3]]);
+        setPlayer(player);
+        player.on('frame', handleFrameNumberChange);
+    });
 
-    useLayoutEffect(() => {
-        setup();
-    }, [setup]);
+    useUnmount(() => {
+        player?.off('frame', handleFrameNumberChange);
+    });
 
     return (
         <div className="player">
@@ -56,7 +65,7 @@ function Player({ apng }: PlayerProps) {
                 />
             </div>
             <div className="control">
-                <button>控件区</button>
+                <button>{frameNumber}</button>
             </div>
         </div>
     );
