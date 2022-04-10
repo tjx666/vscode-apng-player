@@ -2,7 +2,7 @@ import parseAPNG, { APNG } from 'apng-js';
 import { useState } from 'react';
 
 import { Player } from './components';
-import useMount from './hooks/useMount';
+import { useMount } from './hooks';
 import { AppStage } from './types';
 import { loadBinaryData } from './utils';
 

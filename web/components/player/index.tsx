@@ -1,5 +1,4 @@
-import useMount from '@/hooks/useMount';
-import useUnmount from '@/hooks/useUnmount';
+import { useMount, useUnmount } from '@/hooks';
 import { APNG } from 'apng-js';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import ApngPlayer from './player';
@@ -60,8 +59,11 @@ function Player({ apng }: PlayerProps) {
                 <canvas
                     className="previewer"
                     ref={previewerRef}
-                    width={adaptiveSize[0]}
-                    height={adaptiveSize[1]}
+                    width={apng.width}
+                    height={apng.height}
+                    style={{
+                        transform: `scale(${adaptiveSize[2]})`,
+                    }}
                 />
             </div>
             <div className="control">
