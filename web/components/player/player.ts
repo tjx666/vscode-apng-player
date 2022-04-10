@@ -62,10 +62,11 @@ export default class ApngPlayer extends EventEmitter {
                 this._prevFrame.height,
             );
         } else if (this._prevFrame && this._prevFrame.disposeOp == 2) {
+            // putImageData 不会受到 scale 的影响
             this.context.putImageData(
                 this._prevFrameData!,
-                this._prevFrame.left,
-                this._prevFrame.top,
+                this._prevFrame.left * this._scale,
+                this._prevFrame.top * this._scale,
             );
         }
 
@@ -73,11 +74,12 @@ export default class ApngPlayer extends EventEmitter {
         this._prevFrame = frame;
         this._prevFrameData = null;
         if (frame.disposeOp == 2) {
+            // getImageData 不会受到 scale 的影响
             this._prevFrameData = this.context.getImageData(
-                frame.left,
-                frame.top,
-                frame.width,
-                frame.height,
+                frame.left * this._scale,
+                frame.top * this._scale,
+                frame.width * this._scale,
+                frame.height * this._scale,
             );
         }
         if (frame.blendOp == 0) {
